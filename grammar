@@ -1,0 +1,25 @@
+declaration : VAR IDENTIFIER ASSIGN statement
+            : OPEN_SCOPE block CLOSE_SCOPE
+
+statement   : FUNCTION IDENTIFIER LPAREN IDENTIFIER[] RPAREN declaration
+            : IF expression declaration (ELSE (IF expression declaration)* declaration)*
+
+expression : comparison (AND | OR) comparison
+
+comparison : not comparison
+           : term (EQUALS | GREATER THAN | LESS THAN | GREATER OR EQUALS THAN | LESSER OR EQUALS THAN) comparsion
+
+term : factor (PLUS | MINUS) factor
+
+factor : unary (SLASH | STAR) factor
+
+unary : (MINUS | NEGATION) call
+
+call : atom ((LPAREN statement[] RPAREN) | (DOT IDENTIFIER))
+
+atom : NUMBER
+     : STRING
+     : BOOLEAN
+     : NULL
+     : LPAREN expression RPAREN
+     : VARIABLE
