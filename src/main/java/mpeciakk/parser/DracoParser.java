@@ -1,20 +1,22 @@
 package mpeciakk.parser;
 
-import mpeciakk.DracoError;
-import mpeciakk.expression.Expression;
-import mpeciakk.expression.logical.*;
-import mpeciakk.expression.math.*;
-import mpeciakk.expression.other.CallExpression;
-import mpeciakk.expression.other.LiteralExpression;
-import mpeciakk.expression.other.PropertyExpression;
-import mpeciakk.expression.other.VariableExpression;
-import mpeciakk.expression.pattern.PatternExpression;
-import mpeciakk.expression.pattern.PatternStatement;
-import mpeciakk.expression.statement.ExpressionStatement;
-import mpeciakk.expression.statement.Statement;
+import mpeciakk.parser.expression.Expression;
+import mpeciakk.parser.expression.logical.*;
+import mpeciakk.parser.expression.math.*;
+import mpeciakk.parser.expression.other.CallExpression;
+import mpeciakk.parser.expression.other.LiteralExpression;
+import mpeciakk.parser.expression.other.PropertyExpression;
+import mpeciakk.parser.expression.other.VariableExpression;
+import mpeciakk.parser.expression.pattern.PatternExpression;
+import mpeciakk.parser.expression.pattern.PatternStatement;
+import mpeciakk.parser.expression.statement.ExpressionStatement;
+import mpeciakk.parser.expression.statement.Statement;
 import mpeciakk.lexer.Token;
 import mpeciakk.lexer.TokenType;
-import mpeciakk.parser.syntax.*;
+import mpeciakk.parser.syntax.DracoExpression;
+import mpeciakk.parser.syntax.DracoSyntax;
+import mpeciakk.parser.syntax.DracoStatement;
+import mpeciakk.parser.syntax.SyntaxEnvironment;
 import mpeciakk.parser.syntax.builtin.*;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import static mpeciakk.lexer.TokenType.*;
 
 public class DracoParser {
 
-    private static final DracoSyntax[] SYNTAX_EXTENSIONS = new DracoSyntax[]{ new IfStatement(), new BlockStatement(), new InlineIfExpression()};
+    private static final DracoSyntax[] SYNTAX_EXTENSIONS = new DracoSyntax[]{new IfStatement(), new BlockStatement(), new FunctionStatement(), new VariableDeclarationStatement(), new InlineIfExpression(), new FunctionExpression()};
 
     private final List<Token> tokens;
     private int index = 0;
@@ -52,26 +54,17 @@ public class DracoParser {
     public Statement statement() {
         int restore = index;
         for (DracoSyntax syntax : SYNTAX_EXTENSIONS) {
-            SyntaxEnvironment syntaxEnvironment = new SyntaxEnvironment();
+            if (syntax instanceof DracoStatement) {
+                if (syntax.match(this)) {
+                    SyntaxEnvironment syntaxEnvironment = new SyntaxEnvironment();
 
-            if (syntax instanceof DracoSyntaxStatement) {
-                if (syntax instanceof Prematchable) {
-                    if (((Prematchable) syntax).prematch(this)) {
-                        if (syntax.match(this, syntaxEnvironment)) {
-                            return new PatternStatement((DracoSyntaxStatement) syntax, syntaxEnvironment);
-                        }
-                    } else {
-                        continue;
-                    }
+                    syntax.parse(this, syntaxEnvironment);
+                    return new PatternStatement((DracoStatement) syntax, syntaxEnvironment);
                 } else {
-                    if (syntax.match(this, syntaxEnvironment)) {
-                        return new PatternStatement((DracoSyntaxStatement) syntax, syntaxEnvironment);
-                    }
+                    index = restore;
+                    current = tokens.get(index);
                 }
             }
-
-            index = restore;
-            current = tokens.get(index);
         }
 
         return new ExpressionStatement(expression());
@@ -79,16 +72,20 @@ public class DracoParser {
 
     public Expression expression() {
         int restore = index;
-//        for (DracoSyntax syntax : SYNTAX_EXTENSIONS) {
-//            SyntaxEnvironment syntaxEnvironment = new SyntaxEnvironment();
-//
-//            if (syntax instanceof DracoSyntaxExpression && syntax.match(this, syntaxEnvironment)) {
-//                return new PatternExpression((DracoSyntaxExpression) syntax, syntaxEnvironment);
-//            }
-//
-//            index = restore;
-//            current = tokens.get(index);
-//        }
+
+        for (DracoSyntax syntax : SYNTAX_EXTENSIONS) {
+            if (syntax instanceof DracoExpression) {
+                if (syntax.match(this)) {
+                    SyntaxEnvironment syntaxEnvironment = new SyntaxEnvironment();
+
+                    syntax.parse(this, syntaxEnvironment);
+                    return new PatternExpression((DracoExpression) syntax, syntaxEnvironment);
+                } else {
+                    index = restore;
+                    current = tokens.get(index);
+                }
+            }
+        }
 
         return binary();
     }
@@ -187,7 +184,7 @@ public class DracoParser {
                 }
 
                 Token paren = consume(RIGHT_PARENTHESIS, "Expected function call to close with a ')' character!");
-                expression = new CallExpression(expression, arguments);
+                expression = new CallExpression(expression, paren, arguments);
             } else if (match(DOT)) {
                 Token name = consume(IDENTIFIER, "Expected to find a property name after '.'!");
 
@@ -262,9 +259,9 @@ public class DracoParser {
 
     private Error error(Token token, String message) {
         if (token == null) {
-            return new DracoError(message);
+            return new DracoParseError(message);
         } else {
-            return new DracoError(message, lines[token.line()], token.start(), token);
+            return new DracoParseError(message, lines[token.line()], token.start(), token);
         }
     }
 
@@ -282,7 +279,7 @@ public class DracoParser {
         return false;
     }
 
-    private boolean checkNext(TokenType type) {
+    public boolean checkNext(TokenType type) {
         if (isAtEnd()) {
             return false;
         }

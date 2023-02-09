@@ -1,3 +1,4 @@
 package mpeciakk.parser.syntax;
 
-public interface SyntaxKey<T> { }
+public class SyntaxKey<T> {
+}

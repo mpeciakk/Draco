@@ -14,6 +14,10 @@ public class SyntaxEnvironment {
         return (T) values.get(key);
     }
 
+    public <T> T getOrDefault(SyntaxKey<T> key, Object defaultValue) {
+        return (T) values.computeIfAbsent(key, (s) -> defaultValue);
+    }
+
     @Override
     public String toString() {
         return "SyntaxEnvironment{" +

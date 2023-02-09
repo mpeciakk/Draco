@@ -1,6 +1,6 @@
 package mpeciakk.lexer;
 
-import mpeciakk.DracoError;
+import mpeciakk.parser.DracoParseError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +17,9 @@ public class DracoLexer {
         put("null", NULL);
         put("or", OR);
         put("true", TRUE);
+        put("if", IF);
+        put("else", ELSE);
+        put("function", FUNCTION);
     }};
 
     private final List<Token> tokens = new ArrayList<>();
@@ -42,7 +45,7 @@ public class DracoLexer {
             scanCurrent();
         }
 
-        tokens.add(new Token(TokenType.EOF, null, line, 0, start));
+        tokens.add(new Token(TokenType.EOF, null, line, 0, index));
         return tokens;
     }
 
@@ -153,7 +156,7 @@ public class DracoLexer {
                     break;
                 }
 
-                throw new DracoError("Encountered an unexpected character", lines[line], index, null);
+                throw new DracoParseError("Encountered an unexpected character", lines[line], index, null);
             }
         }
     }

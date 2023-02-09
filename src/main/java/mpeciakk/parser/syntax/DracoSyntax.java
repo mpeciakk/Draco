@@ -4,5 +4,7 @@ import mpeciakk.parser.DracoParser;
 
 public abstract class DracoSyntax {
 
-    public abstract boolean match(DracoParser parser, SyntaxEnvironment environment);
+    public abstract boolean match(DracoParser parser);
+
+    public abstract void parse(DracoParser parser, SyntaxEnvironment environment);
 }

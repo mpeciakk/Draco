@@ -1,47 +1,49 @@
 package mpeciakk.parser.syntax.builtin;
 
+import mpeciakk.parser.expression.Expression;
+import mpeciakk.parser.expression.statement.Statement;
 import mpeciakk.lexer.TokenType;
 import mpeciakk.parser.DracoParser;
-import mpeciakk.parser.syntax.DracoSyntaxStatement;
-import mpeciakk.parser.syntax.Prematchable;
+import mpeciakk.parser.syntax.DracoStatement;
 import mpeciakk.parser.syntax.SyntaxEnvironment;
-import mpeciakk.parser.syntax.DracoSyntaxBuilder;
-import mpeciakk.parser.syntax.fragment.*;
+import mpeciakk.parser.syntax.SyntaxKey;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class IfStatement extends DracoSyntaxStatement implements Prematchable {
+public class IfStatement extends DracoStatement {
 
-    private static final ExpressionFragment CONDITION = ExpressionFragment.of();
-    private static final StatementFragment STATEMENT = StatementFragment.of();
-    private static final StatementFragment ELSE_STATEMENT = StatementFragment.of();
-
-    private static final DracoSyntaxBuilder SYNTAX = new DracoSyntaxBuilder(
-            true,
-            LiteralFragment.of("if"),
-            CONDITION,
-            STATEMENT,
-            BlockFragment.optional(
-                    LiteralFragment.of("else"),
-                    ELSE_STATEMENT
-            )
-    );
+    private static final SyntaxKey<Expression> CONDITION = new SyntaxKey<>();
+    private static final SyntaxKey<Statement> STATEMENT = new SyntaxKey<>();
+    private static final SyntaxKey<Statement> ELSE_STATEMENT = new SyntaxKey<>();
 
     @Override
-    public boolean prematch(DracoParser parser) {
-        return parser.getCurrent().type() == TokenType.IDENTIFIER && parser.getCurrent().literal().equals("if");
+    public boolean match(DracoParser parser) {
+        return parser.match(TokenType.IF);
     }
 
     @Override
-    public boolean match(DracoParser parser, SyntaxEnvironment environment) {
-        return SYNTAX.match(parser, environment);
+    public void parse(DracoParser parser, SyntaxEnvironment environment) {
+        Expression condition = parser.expression();
+        Statement statement = parser.statement();
+
+        Statement elseStatement = null;
+
+        if (parser.match(TokenType.ELSE)) {
+            elseStatement = parser.statement();
+        }
+
+        environment.set(CONDITION, condition);
+        environment.set(STATEMENT, statement);
+        environment.set(ELSE_STATEMENT, elseStatement);
     }
 
     @Override
     public void apply(DracoInterpreter interpreter, SyntaxEnvironment environment) {
         if (isTrue(environment.get(CONDITION).evaluate(interpreter))) {
             environment.get(STATEMENT).evaluate(interpreter);
-        } else if (environment.get(ELSE_STATEMENT) != null) {
-            environment.get(ELSE_STATEMENT).evaluate(interpreter);
+        } else {
+            if (environment.get(ELSE_STATEMENT) != null) {
+                environment.get(ELSE_STATEMENT).evaluate(interpreter);
+            }
         }
     }
 

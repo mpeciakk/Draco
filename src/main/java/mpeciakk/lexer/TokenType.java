@@ -28,5 +28,8 @@ public enum TokenType {
     TRUE,
     EOF,
     NOT_EQUAL,
-    NOT
+    NOT,
+    IF,
+    ELSE,
+    FUNCTION
 }

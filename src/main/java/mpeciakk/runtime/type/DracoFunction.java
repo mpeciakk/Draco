@@ -1,6 +1,6 @@
 package mpeciakk.runtime.type;
 
-import mpeciakk.expression.other.CallExpression;
+import mpeciakk.parser.expression.other.CallExpression;
 
 import java.util.List;
 

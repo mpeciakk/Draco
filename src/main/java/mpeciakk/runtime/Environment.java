@@ -19,11 +19,31 @@ public class Environment {
     }
 
     public void define(String name, Object value) {
-        variables.put(name, value);
+        if (parent != null) {
+            if (parent.unsafeGet(name) != null) {
+                parent.define(name, value);
+            } else {
+                variables.put(name, value);
+            }
+        } else {
+            variables.put(name, value);
+        }
     }
 
     public Object get(Token name) {
         return get((String) name.literal());
+    }
+
+    private Object unsafeGet(String name) {
+        if (variables.containsKey(name)) {
+            return variables.get(name);
+        }
+
+        if (parent != null) {
+            return parent.unsafeGet(name);
+        }
+
+        return null;
     }
 
     public Object get(String name) {

@@ -1,7 +1,7 @@
 package mpeciakk.runtime;
 
-import mpeciakk.expression.other.CallExpression;
-import mpeciakk.expression.statement.Statement;
+import mpeciakk.parser.expression.other.CallExpression;
+import mpeciakk.parser.expression.statement.Statement;
 import mpeciakk.runtime.type.DracoFunction;
 
 import java.util.List;
