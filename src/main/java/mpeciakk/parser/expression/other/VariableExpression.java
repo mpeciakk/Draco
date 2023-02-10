@@ -1,5 +1,6 @@
 package mpeciakk.parser.expression.other;
 
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.lexer.Token;
@@ -13,7 +14,7 @@ public class VariableExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
+    public DracoObject evaluate(DracoInterpreter interpreter) {
         return interpreter.getEnvironment().get(variable);
     }
 

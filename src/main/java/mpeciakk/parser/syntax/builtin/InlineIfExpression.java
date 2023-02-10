@@ -1,6 +1,7 @@
 package mpeciakk.parser.syntax.builtin;
 
 import mpeciakk.lexer.TokenType;
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.DracoParser;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.parser.expression.statement.Statement;
@@ -40,7 +41,7 @@ public class InlineIfExpression extends DracoExpression {
     }
 
     @Override
-    public Object apply(DracoInterpreter interpreter, SyntaxEnvironment environment) {
+    public DracoObject apply(DracoInterpreter interpreter, SyntaxEnvironment environment) {
         if (isTrue(environment.get(CONDITION).evaluate(interpreter))) {
             return environment.get(EXPRESSION).evaluate(interpreter);
         } else {

@@ -1,5 +1,8 @@
 package mpeciakk.parser.expression.logical;
 
+import mpeciakk.object.DracoBoolean;
+import mpeciakk.object.DracoNumber;
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
@@ -14,11 +17,11 @@ public class GreaterEqualThanExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        Number leftValue = (Number) left.evaluate(interpreter);
-        Number rightValue = (Number) right.evaluate(interpreter);
+    public DracoObject evaluate(DracoInterpreter interpreter) {
+        DracoNumber leftValue = (DracoNumber) left.evaluate(interpreter);
+        DracoNumber rightValue = (DracoNumber) right.evaluate(interpreter);
 
-        return leftValue.doubleValue() >= rightValue.doubleValue();
+        return new DracoBoolean(leftValue.getValue() >= rightValue.getValue());
     }
 
     @Override

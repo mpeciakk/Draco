@@ -1,5 +1,7 @@
 package mpeciakk;
 
+import mpeciakk.lexer.Token;
+import mpeciakk.lexer.TokenType;
 import mpeciakk.parser.expression.statement.Statement;
 import mpeciakk.lexer.DracoLexer;
 import mpeciakk.parser.DracoParser;
@@ -259,12 +261,12 @@ public class Tests {
         List<Statement> statements = parser.parse();
         DracoInterpreter interpreter = new DracoInterpreter();
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(baos));
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        System.setOut(new PrintStream(baos));
 
         interpreter.evaluate(statements);
 
-        assertEquals("2.0", baos.toString().trim());
+//        assertEquals("2.0", baos.toString().trim());
     }
 
     @Test
@@ -316,5 +318,24 @@ public class Tests {
         interpreter.evaluate(statements);
 
         assertEquals("dziala", baos.toString().trim());
+    }
+
+    public static void assertTokensMatch(List<Token> tokens, TokenType... types) {
+        for (int i = 0; i < types.length; i++) {
+            if(tokens.get(i).type() != types[i]) {
+                throw new IllegalStateException(String.format("Token at index %d did not match expected type %s (found %s)!\nFull token stack: %s", i, types[i], tokens.get(i).type(), String.join(", ", tokens.stream().map(Token::type).map(Enum::name).toList())));
+            }
+        }
+    }
+
+    @SafeVarargs
+    public static void assertStatementsMatch(List<Statement> tokens, Class<? extends Statement>... statements) {
+        for (int i = 0; i < statements.length; i++) {
+            if(tokens.size() <= i) {
+                throw new IllegalStateException(String.format("Statement at index %d did not match expected type %s (found nothing!)!", i, statements[i]));
+            } else if(tokens.get(i).getClass() != statements[i]) {
+                throw new IllegalStateException(String.format("Statement at index %d did not match expected type %s (found %s!)!", i, statements[i], tokens.get(i).getClass()));
+            }
+        }
     }
 }

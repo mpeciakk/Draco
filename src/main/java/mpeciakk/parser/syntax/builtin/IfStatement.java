@@ -1,5 +1,7 @@
 package mpeciakk.parser.syntax.builtin;
 
+import mpeciakk.object.DracoBoolean;
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.parser.expression.statement.Statement;
 import mpeciakk.lexer.TokenType;
@@ -47,13 +49,13 @@ public class IfStatement extends DracoStatement {
         }
     }
 
-    public static boolean isTrue(Object object) {
+    public static boolean isTrue(DracoObject object) {
         if (object == null) {
             return false;
         }
 
-        if (object instanceof Boolean bool) {
-            return bool;
+        if (object instanceof DracoBoolean bool) {
+            return bool.getValue();
         }
 
         return true;

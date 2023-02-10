@@ -1,8 +1,9 @@
 package mpeciakk.runtime;
 
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.other.CallExpression;
 import mpeciakk.parser.expression.statement.Statement;
-import mpeciakk.runtime.type.DracoFunction;
+import mpeciakk.object.DracoFunction;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class DracoInterpreter {
     {
         global.define("print", new DracoFunction() {
             @Override
-            public Object call(CallExpression parent, List<Object> arguments) {
-                for (Object argument : arguments) {
+            public DracoObject call(CallExpression parent, List<DracoObject> arguments) {
+                for (DracoObject argument : arguments) {
                     System.out.println(argument);
                 }
 

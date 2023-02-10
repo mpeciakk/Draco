@@ -3,10 +3,7 @@ package mpeciakk.parser;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.parser.expression.logical.*;
 import mpeciakk.parser.expression.math.*;
-import mpeciakk.parser.expression.other.CallExpression;
-import mpeciakk.parser.expression.other.LiteralExpression;
-import mpeciakk.parser.expression.other.PropertyExpression;
-import mpeciakk.parser.expression.other.VariableExpression;
+import mpeciakk.parser.expression.other.*;
 import mpeciakk.parser.expression.pattern.PatternExpression;
 import mpeciakk.parser.expression.pattern.PatternStatement;
 import mpeciakk.parser.expression.statement.ExpressionStatement;
@@ -33,6 +30,8 @@ public class DracoParser {
     private Token current;
 
     private final String[] lines;
+
+    private final SyntaxEnvironment defaultSyntaxEnvironment = new SyntaxEnvironment();
 
     public DracoParser(List<Token> tokens, String[] lines) {
         this.tokens = tokens;
@@ -199,20 +198,25 @@ public class DracoParser {
 
     private Expression atom() {
         if (match(FALSE)) {
-            return new LiteralExpression(false);
+            return new BooleanExpression(false);
         }
 
         if (match(TRUE)) {
-            return new LiteralExpression(true);
+            return new BooleanExpression(true);
         }
 
         if (match(NULL)) {
-            return new LiteralExpression(null);
+            return new StringExpression(null);
         }
 
         if (check(NUMBER, STRING)) {
             Token token = consume();
-            return new LiteralExpression(token.literal());
+
+            if (token.literal() instanceof Number number) {
+                return new NumberExpression(number.doubleValue());
+            } else {
+                return new StringExpression((String) token.literal());
+            }
         }
 
         if (match(LEFT_PARENTHESIS)) {

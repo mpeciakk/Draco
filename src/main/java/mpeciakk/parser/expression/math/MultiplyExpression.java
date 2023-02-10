@@ -1,5 +1,7 @@
 package mpeciakk.parser.expression.math;
 
+import mpeciakk.object.DracoNumber;
+import mpeciakk.object.DracoObject;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.parser.expression.Expression;
 
@@ -14,11 +16,11 @@ public class MultiplyExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        Number leftValue = (Number) left.evaluate(interpreter);
-        Number rightValue = (Number) right.evaluate(interpreter);
+    public DracoObject evaluate(DracoInterpreter interpreter) {
+        DracoNumber leftValue = (DracoNumber) left.evaluate(interpreter);
+        DracoNumber rightValue = (DracoNumber) right.evaluate(interpreter);
 
-        return leftValue.doubleValue() * rightValue.doubleValue();
+        return new DracoNumber(leftValue.getValue() * rightValue.getValue());
     }
 
     @Override

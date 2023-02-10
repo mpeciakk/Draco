@@ -1,5 +1,7 @@
 package mpeciakk.parser.expression.math;
 
+import mpeciakk.object.DracoNumber;
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
@@ -12,10 +14,10 @@ public class MinusExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        Number value = (Number) expression.evaluate(interpreter);
+    public DracoObject evaluate(DracoInterpreter interpreter) {
+        DracoNumber value = (DracoNumber) expression.evaluate(interpreter);
 
-        return -value.doubleValue();
+        return new DracoNumber(-value.getValue());
     }
 
     @Override

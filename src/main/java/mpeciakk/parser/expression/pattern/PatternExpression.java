@@ -1,5 +1,6 @@
 package mpeciakk.parser.expression.pattern;
 
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.parser.syntax.SyntaxEnvironment;
 import mpeciakk.runtime.DracoInterpreter;
@@ -16,7 +17,7 @@ public class PatternExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
+    public DracoObject evaluate(DracoInterpreter interpreter) {
         return syntax.apply(interpreter, environment);
     }
 

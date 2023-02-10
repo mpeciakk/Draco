@@ -1,5 +1,8 @@
 package mpeciakk.parser.expression.math;
 
+import mpeciakk.object.DracoNumber;
+import mpeciakk.object.DracoObject;
+import mpeciakk.object.DracoString;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.parser.expression.Expression;
 
@@ -14,24 +17,24 @@ public class AddExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        Object leftValue = left.evaluate(interpreter);
-        Object rightValue = right.evaluate(interpreter);
+    public DracoObject evaluate(DracoInterpreter interpreter) {
+        DracoObject leftValue = left.evaluate(interpreter);
+        DracoObject rightValue = right.evaluate(interpreter);
 
-        if (leftValue instanceof Number a && rightValue instanceof Number b) {
-            return a.doubleValue() + b.doubleValue();
+        if (leftValue instanceof DracoNumber a && rightValue instanceof DracoNumber b) {
+            return new DracoNumber(a.getValue() + b.getValue());
         }
 
-        if (leftValue instanceof String a && rightValue instanceof String b) {
-            return a + b;
+        if (leftValue instanceof DracoString a && rightValue instanceof DracoString b) {
+            return new DracoString(a.getValue() + b.getValue());
         }
 
-        if (leftValue instanceof Number a && rightValue instanceof String b) {
-            return a + b;
+        if (leftValue instanceof DracoNumber a && rightValue instanceof DracoString b) {
+            return new DracoString(a.getValue() + b.getValue());
         }
 
-        if (leftValue instanceof String a && rightValue instanceof Number b) {
-            return a + b;
+        if (leftValue instanceof DracoString a && rightValue instanceof DracoNumber b) {
+            return new DracoString(a.getValue() + b.getValue());
         }
 
         throw new RuntimeException("Operands must be strings or numbers!");

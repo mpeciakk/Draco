@@ -1,9 +1,10 @@
 package mpeciakk.parser.expression.other;
 
 import mpeciakk.lexer.Token;
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoRuntimeError;
-import mpeciakk.runtime.type.DracoFunction;
+import mpeciakk.object.DracoFunction;
 import mpeciakk.runtime.DracoInterpreter;
 
 import java.util.List;
@@ -21,9 +22,9 @@ public class CallExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        Object caller = expression.evaluate(interpreter);
-        List<Object> evaluatedArgs = arguments.stream().map(it -> it.evaluate(interpreter)).toList();
+    public DracoObject evaluate(DracoInterpreter interpreter) {
+        DracoObject caller = expression.evaluate(interpreter);
+        List<DracoObject> evaluatedArgs = arguments.stream().map(it -> it.evaluate(interpreter)).toList();
 
         if (caller instanceof DracoFunction function) {
             if (arguments.size() != function.arity()) {

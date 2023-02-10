@@ -1,5 +1,6 @@
 package mpeciakk.parser.expression.logical;
 
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
@@ -16,8 +17,8 @@ public class OrExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        Object leftValue = left.evaluate(interpreter);
+    public DracoObject evaluate(DracoInterpreter interpreter) {
+        DracoObject leftValue = left.evaluate(interpreter);
 
         if (isTrue(leftValue)) {
             return leftValue;

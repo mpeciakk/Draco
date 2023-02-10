@@ -1,5 +1,7 @@
 package mpeciakk.parser.expression.logical;
 
+import mpeciakk.object.DracoBoolean;
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
@@ -14,11 +16,11 @@ public class NotEqualsExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
+    public DracoObject evaluate(DracoInterpreter interpreter) {
         Object leftValue = left.evaluate(interpreter);
         Object rightValue = right.evaluate(interpreter);
 
-        return !leftValue.equals(rightValue);
+        return new DracoBoolean(!leftValue.equals(rightValue));
     }
 
     @Override

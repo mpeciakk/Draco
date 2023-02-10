@@ -1,19 +1,20 @@
 package mpeciakk.parser.expression.other;
 
+import mpeciakk.object.DracoString;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class LiteralExpression extends Expression {
+public class StringExpression extends Expression {
 
-    private final Object value;
+    private final String value;
 
-    public LiteralExpression(Object value) {
+    public StringExpression(String value) {
         this.value = value;
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        return value;
+    public DracoString evaluate(DracoInterpreter interpreter) {
+        return new DracoString(value);
     }
 
     @Override

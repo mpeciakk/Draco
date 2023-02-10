@@ -1,5 +1,7 @@
 package mpeciakk.parser.expression.logical;
 
+import mpeciakk.object.DracoBoolean;
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
@@ -14,10 +16,10 @@ public class NotExpression extends Expression {
     }
 
     @Override
-    public Object evaluate(DracoInterpreter interpreter) {
-        Object value = expression.evaluate(interpreter);
+    public DracoObject evaluate(DracoInterpreter interpreter) {
+        DracoObject value = expression.evaluate(interpreter);
 
-        return !isTrue(value);
+        return new DracoBoolean(!isTrue(value));
     }
 
     @Override

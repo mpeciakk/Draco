@@ -1,5 +1,6 @@
 package mpeciakk.parser.syntax.builtin;
 
+import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.other.CallExpression;
 import mpeciakk.parser.expression.statement.Statement;
 import mpeciakk.lexer.Token;
@@ -11,7 +12,7 @@ import mpeciakk.parser.syntax.SyntaxKey;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.runtime.DracoRuntimeError;
 import mpeciakk.runtime.Environment;
-import mpeciakk.runtime.type.DracoFunction;
+import mpeciakk.object.DracoFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class FunctionStatement extends DracoStatement {
 
         DracoFunction function = new DracoFunction() {
             @Override
-            public Object call(CallExpression parent, List<Object> args) {
+            public DracoObject call(CallExpression parent, List<DracoObject> args) {
                 if (arguments.size() != args.size()) {
                     throw new DracoRuntimeError(String.format("""
                         Function %s was called, which expects %d arguments, but %d were provided instead.
