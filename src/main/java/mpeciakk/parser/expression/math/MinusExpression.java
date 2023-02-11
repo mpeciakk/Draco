@@ -5,7 +5,7 @@ import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class MinusExpression extends Expression {
+public class MinusExpression implements Expression {
 
     private final Expression expression;
 

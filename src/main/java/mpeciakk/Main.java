@@ -1,6 +1,6 @@
 package mpeciakk;
 
-import mpeciakk.parser.expression.statement.Statement;
+import mpeciakk.parser.expression.Statement;
 import mpeciakk.lexer.DracoLexer;
 import mpeciakk.parser.DracoParser;
 import mpeciakk.runtime.DracoInterpreter;
@@ -10,8 +10,24 @@ import java.util.List;
 public class Main {
 
     static String input = """
-            
-            """.trim();
+            a = 11
+            b = 22
+                        
+            function c() {
+                if (a > b) {
+                    print(a)
+                }
+            }
+                        
+            function d() {
+                if (a < b) {
+                    print(b)
+                }
+            }
+                        
+            c()
+            d()
+                        """.trim();
 
     public static void main(String[] args) {
         DracoLexer lexer = new DracoLexer(input);

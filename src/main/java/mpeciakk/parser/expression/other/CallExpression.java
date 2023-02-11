@@ -9,7 +9,7 @@ import mpeciakk.runtime.DracoInterpreter;
 
 import java.util.List;
 
-public class CallExpression extends Expression {
+public class CallExpression implements Expression {
 
     private final Expression expression;
     private final Token paren;

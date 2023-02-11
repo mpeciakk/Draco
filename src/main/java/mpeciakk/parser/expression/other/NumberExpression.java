@@ -5,7 +5,7 @@ import mpeciakk.object.DracoString;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class NumberExpression extends Expression {
+public class NumberExpression implements Expression {
 
     private final double value;
 

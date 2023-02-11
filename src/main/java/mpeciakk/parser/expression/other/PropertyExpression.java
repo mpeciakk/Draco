@@ -6,7 +6,7 @@ import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.lexer.Token;
 import mpeciakk.runtime.DracoRuntimeError;
 
-public class PropertyExpression extends Expression {
+public class PropertyExpression implements Expression {
 
     private final Expression expression;
     private final Token name;

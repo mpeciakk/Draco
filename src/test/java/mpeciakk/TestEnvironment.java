@@ -3,7 +3,7 @@ package mpeciakk;
 import mpeciakk.lexer.DracoLexer;
 import mpeciakk.object.DracoObject;
 import mpeciakk.parser.DracoParser;
-import mpeciakk.parser.expression.statement.Statement;
+import mpeciakk.parser.expression.Statement;
 import mpeciakk.runtime.DracoInterpreter;
 
 import java.util.List;

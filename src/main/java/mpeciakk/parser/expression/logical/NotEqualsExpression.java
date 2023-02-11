@@ -5,7 +5,7 @@ import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class NotEqualsExpression extends Expression {
+public class NotEqualsExpression implements Expression {
 
     private final Expression left;
     private final Expression right;

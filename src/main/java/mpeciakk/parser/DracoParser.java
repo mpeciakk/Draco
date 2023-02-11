@@ -4,17 +4,11 @@ import mpeciakk.parser.expression.Expression;
 import mpeciakk.parser.expression.logical.*;
 import mpeciakk.parser.expression.math.*;
 import mpeciakk.parser.expression.other.*;
-import mpeciakk.parser.expression.pattern.PatternExpression;
-import mpeciakk.parser.expression.pattern.PatternStatement;
-import mpeciakk.parser.expression.statement.ExpressionStatement;
-import mpeciakk.parser.expression.statement.Statement;
+import mpeciakk.parser.expression.ExpressionStatement;
+import mpeciakk.parser.expression.Statement;
 import mpeciakk.lexer.Token;
 import mpeciakk.lexer.TokenType;
-import mpeciakk.parser.syntax.DracoExpression;
-import mpeciakk.parser.syntax.DracoSyntax;
-import mpeciakk.parser.syntax.DracoStatement;
-import mpeciakk.parser.syntax.SyntaxEnvironment;
-import mpeciakk.parser.syntax.builtin.*;
+import mpeciakk.parser.syntax.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +17,13 @@ import static mpeciakk.lexer.TokenType.*;
 
 public class DracoParser {
 
-    private static final DracoSyntax[] SYNTAX_EXTENSIONS = new DracoSyntax[]{new IfStatement(), new BlockStatement(), new FunctionStatement(), new VariableDeclarationStatement(), new InlineIfExpression(), new FunctionExpression()};
+    private static final DracoSyntax<?>[] SYNTAX_EXTENSIONS = new DracoSyntax[]{new IfStatement(), new BlockStatement(), new FunctionStatement(), new VariableDeclarationStatement(), new InlineIfExpression(), new FunctionExpression()};
 
     private final List<Token> tokens;
     private int index = 0;
     private Token current;
 
     private final String[] lines;
-
-    private final SyntaxEnvironment defaultSyntaxEnvironment = new SyntaxEnvironment();
 
     public DracoParser(List<Token> tokens, String[] lines) {
         this.tokens = tokens;
@@ -52,13 +44,14 @@ public class DracoParser {
 
     public Statement statement() {
         int restore = index;
-        for (DracoSyntax syntax : SYNTAX_EXTENSIONS) {
-            if (syntax instanceof DracoStatement) {
-                if (syntax.match(this)) {
-                    SyntaxEnvironment syntaxEnvironment = new SyntaxEnvironment();
+        for (DracoSyntax<?> syntax : SYNTAX_EXTENSIONS) {
+            DracoSyntax<?> cloned = syntax.clone();
 
-                    syntax.parse(this, syntaxEnvironment);
-                    return new PatternStatement((DracoStatement) syntax, syntaxEnvironment);
+            if (cloned instanceof Statement) {
+                if (cloned.match(this)) {
+                    cloned.parse(this);
+
+                    return (Statement) cloned;
                 } else {
                     index = restore;
                     current = tokens.get(index);
@@ -71,14 +64,14 @@ public class DracoParser {
 
     public Expression expression() {
         int restore = index;
+        for (DracoSyntax<?> syntax : SYNTAX_EXTENSIONS) {
+            DracoSyntax<?> cloned = syntax.clone();
 
-        for (DracoSyntax syntax : SYNTAX_EXTENSIONS) {
-            if (syntax instanceof DracoExpression) {
-                if (syntax.match(this)) {
-                    SyntaxEnvironment syntaxEnvironment = new SyntaxEnvironment();
+            if (cloned instanceof Expression) {
+                if (cloned.match(this)) {
+                    cloned.parse(this);
 
-                    syntax.parse(this, syntaxEnvironment);
-                    return new PatternExpression((DracoExpression) syntax, syntaxEnvironment);
+                    return (Expression) cloned;
                 } else {
                     index = restore;
                     current = tokens.get(index);

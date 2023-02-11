@@ -1,9 +1,10 @@
-package mpeciakk.parser.expression.statement;
+package mpeciakk.parser.expression;
 
 import mpeciakk.parser.expression.Expression;
+import mpeciakk.parser.expression.Statement;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class ExpressionStatement extends Statement {
+public class ExpressionStatement implements Statement {
 
     private final Expression expression;
 

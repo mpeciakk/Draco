@@ -5,7 +5,7 @@ import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.lexer.Token;
 
-public class VariableExpression extends Expression {
+public class VariableExpression implements Expression {
 
     private final Token variable;
 

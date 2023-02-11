@@ -4,7 +4,7 @@ import mpeciakk.object.DracoString;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class StringExpression extends Expression {
+public class StringExpression implements Expression {
 
     private final String value;
 

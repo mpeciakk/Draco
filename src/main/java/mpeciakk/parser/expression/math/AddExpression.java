@@ -6,7 +6,7 @@ import mpeciakk.object.DracoString;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.parser.expression.Expression;
 
-public class AddExpression extends Expression {
+public class AddExpression implements Expression {
 
     private final Expression left;
     private final Expression right;

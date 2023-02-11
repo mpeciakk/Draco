@@ -6,7 +6,7 @@ import mpeciakk.object.DracoObject;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.parser.expression.Expression;
 
-public class LessEqualThanExpression extends Expression {
+public class LessEqualThanExpression implements Expression {
 
     private final Expression left;
     private final Expression right;

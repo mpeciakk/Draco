@@ -5,7 +5,7 @@ import mpeciakk.object.DracoString;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-public class BooleanExpression extends Expression {
+public class BooleanExpression implements Expression {
 
     private final boolean value;
 

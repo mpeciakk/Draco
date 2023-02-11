@@ -2,7 +2,7 @@ package mpeciakk.runtime;
 
 import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.other.CallExpression;
-import mpeciakk.parser.expression.statement.Statement;
+import mpeciakk.parser.expression.Statement;
 import mpeciakk.object.DracoFunction;
 
 import java.util.List;

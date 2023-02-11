@@ -5,9 +5,9 @@ import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-import static mpeciakk.parser.syntax.builtin.IfStatement.isTrue;
+import static mpeciakk.parser.syntax.IfStatement.isTrue;
 
-public class NotExpression extends Expression {
+public class NotExpression implements Expression {
 
     private final Expression expression;
 

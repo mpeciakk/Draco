@@ -1,13 +1,11 @@
-package mpeciakk.parser.syntax.builtin;
+package mpeciakk.parser.syntax;
 
-import mpeciakk.lexer.TokenType;
 import mpeciakk.object.DracoObject;
-import mpeciakk.parser.DracoParser;
 import mpeciakk.parser.expression.other.CallExpression;
-import mpeciakk.parser.expression.statement.Statement;
-import mpeciakk.parser.syntax.DracoExpression;
-import mpeciakk.parser.syntax.SyntaxEnvironment;
-import mpeciakk.parser.syntax.SyntaxKey;
+import mpeciakk.parser.expression.Statement;
+import mpeciakk.lexer.Token;
+import mpeciakk.lexer.TokenType;
+import mpeciakk.parser.DracoParser;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.runtime.DracoRuntimeError;
 import mpeciakk.runtime.Environment;
@@ -16,11 +14,11 @@ import mpeciakk.object.DracoFunction;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FunctionExpression extends DracoExpression {
+public class FunctionStatement extends DracoSyntax<FunctionStatement> implements Statement {
 
-    private static final SyntaxKey<List<String>> ARGUMENTS = new SyntaxKey<>();
-    private static final SyntaxKey<Statement> STATEMENT = new SyntaxKey<>();
-
+    private Token name;
+    private final List<String> arguments = new ArrayList<>();
+    private Statement statement;
 
     @Override
     public boolean match(DracoParser parser) {
@@ -28,10 +26,10 @@ public class FunctionExpression extends DracoExpression {
     }
 
     @Override
-    public void parse(DracoParser parser, SyntaxEnvironment environment) {
+    public void parse(DracoParser parser) {
+        name = parser.consume(TokenType.IDENTIFIER, "Expected to find function name after 'function' keyword!");
         parser.consume(TokenType.LEFT_PARENTHESIS, "Expected to find opening parenthesis after function name!");
 
-        List<String> arguments = new ArrayList<>();
         while (parser.check(TokenType.IDENTIFIER)) {
             arguments.add((String) parser.getCurrent().literal());
             parser.advance();
@@ -39,24 +37,20 @@ public class FunctionExpression extends DracoExpression {
         }
 
         parser.consume(TokenType.RIGHT_PARENTHESIS, "Expected to find closing parenthesis after function name!");
-        Statement statement = parser.statement();
-
-        environment.set(ARGUMENTS, arguments);
-        environment.set(STATEMENT, statement);
+        statement = parser.statement();
     }
 
     @Override
-    public DracoObject apply(DracoInterpreter interpreter, SyntaxEnvironment environment) {
-        List<String> arguments = environment.get(ARGUMENTS);
-        Statement statement = environment.get(STATEMENT);
+    public void evaluate(DracoInterpreter interpreter) {
+        String functionName = (String) name.literal();
 
-        return new DracoFunction() {
+        DracoFunction function = new DracoFunction() {
             @Override
             public DracoObject call(CallExpression parent, List<DracoObject> args) {
                 if (arguments.size() != args.size()) {
                     throw new DracoRuntimeError(String.format("""
                         Function %s was called, which expects %d arguments, but %d were provided instead.
-                        """, "anonymous", arity(), args.size()));
+                        """, name, arity(), args.size()));
                 }
 
                 Environment env = interpreter.pushEnvironment();
@@ -79,8 +73,10 @@ public class FunctionExpression extends DracoExpression {
 
             @Override
             public String name() {
-                return "";
+                return functionName;
             }
         };
+
+        interpreter.getEnvironment().define(functionName, function);
     }
 }

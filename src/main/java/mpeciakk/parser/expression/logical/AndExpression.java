@@ -4,9 +4,9 @@ import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 
-import static mpeciakk.parser.syntax.builtin.IfStatement.isTrue;
+import static mpeciakk.parser.syntax.IfStatement.isTrue;
 
-public class AndExpression extends Expression {
+public class AndExpression implements Expression {
 
     private final Expression left;
     private final Expression right;
