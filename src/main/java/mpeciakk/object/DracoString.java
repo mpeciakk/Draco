@@ -1,5 +1,8 @@
 package mpeciakk.object;
 
+import mpeciakk.parser.expression.other.CallExpression;
+
+import java.util.List;
 import java.util.Objects;
 
 public class DracoString extends DracoObject {
@@ -8,6 +11,8 @@ public class DracoString extends DracoObject {
 
     public DracoString(String value) {
         this.value = value;
+
+        getProperties().put("length", new DracoNumber(value.length()));
     }
 
     public String getValue() {

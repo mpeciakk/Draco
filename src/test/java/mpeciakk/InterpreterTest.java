@@ -228,6 +228,42 @@ public class InterpreterTest {
     }
 
     @Test
+    void function_test4() {
+        String input = """
+                    a = 11
+                b = 22
+                            
+                function c() {
+                    if (a > b) {
+                        print(a)
+                    }
+                }
+                            
+                function d() {
+                    if (a < b) {
+                        print(b)
+                    }
+                }
+                            
+                c()
+                d()
+                                """.trim();
+
+
+        DracoLexer lexer = new DracoLexer(input);
+        DracoParser parser = new DracoParser(lexer.parse(), input.split("\n"));
+        DracoInterpreter interpreter = new DracoInterpreter();
+        List<Statement> statements = parser.parse();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(baos));
+
+        interpreter.evaluate(statements);
+
+        assertEquals("22.0", baos.toString().trim());
+    }
+
+    @Test
     void inline_if1() {
         String input = """
                 print(if (1 == 1) 1 else 2)

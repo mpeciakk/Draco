@@ -1,10 +1,14 @@
 package mpeciakk.parser.expression.other;
 
+import mpeciakk.object.DracoJavaClass;
+import mpeciakk.object.DracoJavaField;
 import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.lexer.Token;
 import mpeciakk.runtime.DracoRuntimeError;
+
+import java.util.Objects;
 
 public class PropertyExpression implements Expression {
 
@@ -18,16 +22,20 @@ public class PropertyExpression implements Expression {
 
     @Override
     public DracoObject evaluate(DracoInterpreter interpreter) {
-        Object object = expression.evaluate(interpreter);
+        DracoObject object = expression.evaluate(interpreter);
         String propertyName = (String) name.literal();
 
-        if (object instanceof DracoObject dracoObject) {
-            return dracoObject.getProperties().get(propertyName);
+        if (Objects.equals(propertyName, "javaClass")) {
+            return new DracoJavaClass(object.getClass());
         }
 
-        throw new DracoRuntimeError(String.format("""
-                        Object %s has no field named %s.
-                        """, expression, propertyName));
+        if (object.getProperties().containsKey(propertyName)) {
+            return object.getProperties().get(propertyName);
+        } else {
+            throw new DracoRuntimeError(String.format("""
+                    Object %s has no field named %s.
+                    """, object, propertyName));
+        }
     }
 
     @Override

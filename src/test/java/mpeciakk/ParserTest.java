@@ -1,6 +1,6 @@
 package mpeciakk;
 
-import mpeciakk.parser.expression.ExpressionStatement;
+import mpeciakk.parser.expression.other.ExpressionStatement;
 import mpeciakk.parser.syntax.BlockStatement;
 import mpeciakk.parser.syntax.FunctionStatement;
 import mpeciakk.parser.syntax.IfStatement;

@@ -10,23 +10,8 @@ import java.util.List;
 public class Main {
 
     static String input = """
-            a = 11
-            b = 22
-                        
-            function c() {
-                if (a > b) {
-                    print(a)
-                }
-            }
-                        
-            function d() {
-                if (a < b) {
-                    print(b)
-                }
-            }
-                        
-            c()
-            d()
+            a = "test"
+            print(a)
                         """.trim();
 
     public static void main(String[] args) {

@@ -4,7 +4,7 @@ import mpeciakk.parser.expression.Expression;
 import mpeciakk.parser.expression.logical.*;
 import mpeciakk.parser.expression.math.*;
 import mpeciakk.parser.expression.other.*;
-import mpeciakk.parser.expression.ExpressionStatement;
+import mpeciakk.parser.expression.other.ExpressionStatement;
 import mpeciakk.parser.expression.Statement;
 import mpeciakk.lexer.Token;
 import mpeciakk.lexer.TokenType;

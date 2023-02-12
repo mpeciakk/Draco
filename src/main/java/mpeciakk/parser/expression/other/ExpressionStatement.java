@@ -1,4 +1,4 @@
-package mpeciakk.parser.expression;
+package mpeciakk.parser.expression.other;
 
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.parser.expression.Statement;
