@@ -17,7 +17,7 @@ import static mpeciakk.lexer.TokenType.*;
 
 public class DracoParser {
 
-    private static final DracoSyntax<?>[] SYNTAX_EXTENSIONS = new DracoSyntax[]{new IfStatement(), new BlockStatement(), new FunctionStatement(), new VariableDeclarationStatement(), new InlineIfExpression(), new FunctionExpression()};
+    private static final DracoSyntax<?>[] SYNTAX_EXTENSIONS = new DracoSyntax[]{new IfStatement(), new BlockStatement(), new FunctionStatement(), new VariableDeclarationStatement(), new InlineIfExpression(), new FunctionExpression(), new ArrayExpression()};
 
     private final List<Token> tokens;
     private int index = 0;
@@ -181,6 +181,11 @@ public class DracoParser {
                 Token name = consume(IDENTIFIER, "Expected to find a property name after '.'!");
 
                 expression = new PropertyExpression(expression, name);
+            } else if (match(SQUARE_LEFT)) {
+                Token name = consume(NUMBER, "Expected to find a property name after '.'!");
+                consume(SQUARE_RIGHT, "Expected ']'");
+
+                expression = new IndexExpression(expression, name);
             } else {
                 break;
             }

@@ -31,5 +31,7 @@ public enum TokenType {
     NOT,
     IF,
     ELSE,
-    FUNCTION
+    FUNCTION,
+    SQUARE_LEFT,
+    SQUARE_RIGHT
 }

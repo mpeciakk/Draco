@@ -61,6 +61,14 @@ public class DracoLexer {
                 addToken(RIGHT_PARENTHESIS);
                 advance();
             }
+            case '[' -> {
+                addToken(SQUARE_LEFT);
+                advance();
+            }
+            case ']' -> {
+                addToken(SQUARE_RIGHT);
+                advance();
+            }
             case ',' -> {
                 addToken(COMMA);
                 advance();
