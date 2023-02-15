@@ -1,15 +1,11 @@
 package mpeciakk.parser.expression.other;
 
 import mpeciakk.object.DracoArray;
-import mpeciakk.object.DracoJavaClass;
-import mpeciakk.object.DracoJavaField;
+import mpeciakk.object.DracoJsonObject;
 import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
 import mpeciakk.lexer.Token;
-import mpeciakk.runtime.DracoRuntimeError;
-
-import java.util.Objects;
 
 public class IndexExpression implements Expression {
 
@@ -24,19 +20,13 @@ public class IndexExpression implements Expression {
     @Override
     public DracoObject evaluate(DracoInterpreter interpreter) {
         DracoObject object = expression.evaluate(interpreter);
-        Double propertyName = (Double) name.literal();
+        String propertyName = (String) name.literal();
 
         if (object instanceof DracoArray dracoArray) {
-            return dracoArray.getElements().get(propertyName.intValue());
+            return dracoArray.getElements().get(Integer.parseInt(propertyName));
+        } else if (object instanceof DracoJsonObject jsonObject) {
+            return jsonObject.getChildren().get(propertyName);
         }
-
-//        if (object.getProperties().containsKey(propertyName)) {
-//            return object.getProperties().get(propertyName);
-//        } else {
-//            throw new DracoRuntimeError(String.format("""
-//                    Object %s has no field named %s.
-//                    """, object, propertyName));
-//        }
 
         return null;
     }

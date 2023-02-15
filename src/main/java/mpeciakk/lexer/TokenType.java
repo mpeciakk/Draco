@@ -33,5 +33,6 @@ public enum TokenType {
     ELSE,
     FUNCTION,
     SQUARE_LEFT,
-    SQUARE_RIGHT
+    SQUARE_RIGHT,
+    COLON
 }

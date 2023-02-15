@@ -10,13 +10,17 @@ import java.util.List;
 public class Main {
 
     static String input = """
-            a = [function(s) {
-                print(s)
-            }, 2, "Republika poludniowej afryki"]
+            a = {
+                key: "value",
+                number: 420,
+                f: function(a) {
+                    print("function a: " + a)
+                }
+            }
             
-            a[0]("siur123")
-            print(a[1])
-            print(a[2])
+            print(a.key)
+            print(a.number)
+            a.f("test")
                         """.trim();
 
     public static void main(String[] args) {

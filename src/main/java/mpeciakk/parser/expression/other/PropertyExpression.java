@@ -1,7 +1,6 @@
 package mpeciakk.parser.expression.other;
 
-import mpeciakk.object.DracoJavaClass;
-import mpeciakk.object.DracoJavaField;
+import mpeciakk.object.DracoJsonObject;
 import mpeciakk.object.DracoObject;
 import mpeciakk.parser.expression.Expression;
 import mpeciakk.runtime.DracoInterpreter;
@@ -25,12 +24,10 @@ public class PropertyExpression implements Expression {
         DracoObject object = expression.evaluate(interpreter);
         String propertyName = (String) name.literal();
 
-        if (Objects.equals(propertyName, "javaClass")) {
-            return new DracoJavaClass(object.getClass());
-        }
-
         if (object.getProperties().containsKey(propertyName)) {
             return object.getProperties().get(propertyName);
+        } else if (object instanceof DracoJsonObject jsonObject) {
+            return jsonObject.getChildren().get(propertyName);
         } else {
             throw new DracoRuntimeError(String.format("""
                     Object %s has no field named %s.

@@ -89,6 +89,10 @@ public class DracoLexer {
                 addToken(SEMICOLON);
                 advance();
             }
+            case ':' -> {
+                addToken(COLON);
+                advance();
+            }
             case '*' -> {
                 addToken(STAR);
                 advance();

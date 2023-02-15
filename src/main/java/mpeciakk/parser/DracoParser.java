@@ -17,7 +17,7 @@ import static mpeciakk.lexer.TokenType.*;
 
 public class DracoParser {
 
-    private static final DracoSyntax<?>[] SYNTAX_EXTENSIONS = new DracoSyntax[]{new IfStatement(), new BlockStatement(), new FunctionStatement(), new VariableDeclarationStatement(), new InlineIfExpression(), new FunctionExpression(), new ArrayExpression()};
+    private static final DracoSyntax<?>[] SYNTAX_EXTENSIONS = new DracoSyntax[]{new IfStatement(), new BlockStatement(), new FunctionStatement(), new VariableDeclarationStatement(), new InlineIfExpression(), new FunctionExpression(), new ArrayExpression(), new ObjectExpression()};
 
     private final List<Token> tokens;
     private int index = 0;
