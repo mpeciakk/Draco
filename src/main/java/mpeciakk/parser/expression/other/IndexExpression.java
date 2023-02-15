@@ -10,20 +10,20 @@ import mpeciakk.lexer.Token;
 public class IndexExpression implements Expression {
 
     private final Expression expression;
-    private final Token name;
+    private final Expression index;
 
-    public IndexExpression(Expression expression, Token name) {
+    public IndexExpression(Expression expression, Expression index) {
         this.expression = expression;
-        this.name = name;
+        this.index = index;
     }
 
     @Override
     public DracoObject evaluate(DracoInterpreter interpreter) {
         DracoObject object = expression.evaluate(interpreter);
-        String propertyName = (String) name.literal();
+        String propertyName = String.valueOf(index.evaluate(interpreter));
 
         if (object instanceof DracoArray dracoArray) {
-            return dracoArray.getElements().get(Integer.parseInt(propertyName));
+            return dracoArray.getElements().get((int) Double.parseDouble(propertyName));
         } else if (object instanceof DracoJsonObject jsonObject) {
             return jsonObject.getChildren().get(propertyName);
         }
@@ -35,7 +35,7 @@ public class IndexExpression implements Expression {
     public String toString() {
         return "PropertyExpression{" +
                 "expression=" + expression +
-                ", name=" + name +
+                ", name=" + index +
                 '}';
     }
 }

@@ -182,7 +182,7 @@ public class DracoParser {
 
                 expression = new PropertyExpression(expression, name);
             } else if (match(SQUARE_LEFT)) {
-                Token name = consume(NUMBER, "Expected to find a property name after '.'!");
+                Expression name = expression();
                 consume(SQUARE_RIGHT, "Expected ']'");
 
                 expression = new IndexExpression(expression, name);
