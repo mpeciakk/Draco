@@ -1,6 +1,6 @@
 package mpeciakk.lexer;
 
-import mpeciakk.parser.DracoParseError;
+import mpeciakk.DracoTokenError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import static mpeciakk.lexer.TokenType.*;
 
 public class DracoLexer {
 
-    private static final Map<String, TokenType> RESERVED_KEYWORDS = new HashMap<>() {{
+    private static final Map<String, TokenType> KEYWORDS = new HashMap<>() {{
         put("and", AND);
         put("false", FALSE);
         put("null", NULL);
@@ -22,6 +22,22 @@ public class DracoLexer {
         put("function", FUNCTION);
     }};
 
+    private static final Map<Character, TokenType> SIMPLE_TOKENS = new HashMap<>() {{
+        put('(', LEFT_PARENTHESIS);
+        put(')', RIGHT_PARENTHESIS);
+        put('[', LEFT_SQUARE);
+        put(']', RIGHT_SQUARE);
+        put(',', COMMA);
+        put('.', DOT);
+        put('-', MINUS);
+        put('+', PLUS);
+        put(';', SEMICOLON);
+        put(':', COLON);
+        put('*', STAR);
+        put('{', OPEN_SCOPE);
+        put('}', CLOSE_SCOPE);
+    }};
+
     private final List<Token> tokens = new ArrayList<>();
 
     private final String source;
@@ -29,6 +45,7 @@ public class DracoLexer {
     private int index = -1;
     private int line = 0;
     private int lineStart = 0;
+    private int indexInLine = 0;
     private char current = '\0';
     private final String[] lines;
 
@@ -45,54 +62,20 @@ public class DracoLexer {
             scanCurrent();
         }
 
-        tokens.add(new Token(TokenType.EOF, null, line, 0, index));
+        lineStart = 0;
+        addToken(TokenType.EOF);
         return tokens;
     }
 
     private void scanCurrent() {
+        if (SIMPLE_TOKENS.containsKey(current)) {
+            addToken(SIMPLE_TOKENS.get(current));
+            advance();
+            return;
+        }
+
         switch (current) {
             case '"' -> string();
-
-            case '(' -> {
-                addToken(LEFT_PARENTHESIS);
-                advance();
-            }
-            case ')' -> {
-                addToken(RIGHT_PARENTHESIS);
-                advance();
-            }
-            case ',' -> {
-                addToken(COMMA);
-                advance();
-            }
-            case '.' -> {
-                addToken(DOT);
-                advance();
-            }
-            case '-' -> {
-                addToken(MINUS);
-                advance();
-            }
-            case '+' -> {
-                addToken(PLUS);
-                advance();
-            }
-            case ';' -> {
-                addToken(SEMICOLON);
-                advance();
-            }
-            case '*' -> {
-                addToken(STAR);
-                advance();
-            }
-            case '{' -> {
-                addToken(OPEN_SCOPE);
-                advance();
-            }
-            case '}' -> {
-                addToken(CLOSE_SCOPE);
-                advance();
-            }
 
             case '!' -> {
                 addToken(next('=') ? NOT_EQUAL : NOT);
@@ -142,6 +125,7 @@ public class DracoLexer {
             case '\n' -> {
                 line++;
                 lineStart = index;
+                indexInLine = 0;
                 advance();
             }
 
@@ -156,38 +140,40 @@ public class DracoLexer {
                     break;
                 }
 
-                throw new DracoParseError("Encountered an unexpected character", lines[line], index, null);
+                throw new DracoTokenError("Encountered an unexpected character '" + current + "'", lines[line], line, indexInLine);
             }
         }
     }
 
-    private void identifier() {
-        String identifier = "";
+    private void string() {
+        StringBuilder string = new StringBuilder();
 
-        while (!isAtEnd() && (Character.isAlphabetic(current) || Character.isDigit(current) || current == '_')) {
-            identifier += current;
+        advance();
+
+        while (!isAtEnd() && current != '"') {
+            string.append(current);
             advance();
         }
 
-        TokenType type = IDENTIFIER;
-        TokenType keyword = RESERVED_KEYWORDS.get(identifier);
-        if (keyword != null) {
-            type = keyword;
+        if (current != '"') {
+            throw new DracoTokenError("Expected '\"'", lines[line], line, indexInLine);
+        } else {
+            advance();
         }
 
-        addToken(type, identifier);
+        addToken(STRING, string.toString(), string.toString());
     }
 
     private void number() {
-        String number = "";
+        StringBuilder number = new StringBuilder();
         boolean hadDot = false;
 
         while (!isAtEnd() && (Character.isDigit(current) || current == '.')) {
-            number += current;
+            number.append(current);
 
             if (current == '.') {
                 if (hadDot) {
-                    throw new Error(String.format("Unexpected character '.' on line %d:%d!", line, index));
+                    throw new DracoTokenError("Unexpected character '.'", lines[line], line, indexInLine);
                 }
 
                 hadDot = true;
@@ -196,38 +182,28 @@ public class DracoLexer {
             advance();
         }
 
-        addToken(NUMBER, Double.parseDouble(number));
-    }
-
-    private void string() {
-        String string = "";
-
-        advance();
-
-        while (!isAtEnd() && current != '"') {
-            string += current;
-            advance();
-        }
-
-        if (current != '"') {
-            throw new Error(String.format("Encountered unterminated string on line %d!", line));
+        if (hadDot) {
+            addToken(FLOAT, Float.parseFloat(number.toString()), number.toString());
         } else {
+            addToken(INT, Integer.parseInt(number.toString()), number.toString());
+        }
+    }
+
+    private void identifier() {
+        StringBuilder identifier = new StringBuilder();
+
+        while (!isAtEnd() && (Character.isAlphabetic(current) || Character.isDigit(current) || current == '_')) {
+            identifier.append(current);
             advance();
         }
 
-        addToken(STRING, string);
-    }
-
-    private boolean isAtEnd() {
-        return index >= source.length();
-    }
-
-    private void advance() {
-        index++;
-
-        if (!isAtEnd()) {
-            current = source.charAt(index);
+        TokenType type = IDENTIFIER;
+        TokenType keyword = KEYWORDS.get(identifier.toString());
+        if (keyword != null) {
+            type = keyword;
         }
+
+        addToken(type, identifier.toString(), identifier.toString());
     }
 
     private boolean next(char next) {
@@ -245,11 +221,24 @@ public class DracoLexer {
         return false;
     }
 
-    private void addToken(TokenType type) {
-        addToken(type, null);
+    private boolean isAtEnd() {
+        return index >= source.length();
     }
 
-    private void addToken(TokenType type, Object value) {
-        tokens.add(new Token(type, value, line, lineStart, start));
+    private void advance() {
+        index++;
+        indexInLine++;
+
+        if (!isAtEnd()) {
+            current = source.charAt(index);
+        }
+    }
+
+    private void addToken(TokenType type) {
+        addToken(type, null, null);
+    }
+
+    private void addToken(TokenType type, Object value, String literal) {
+        tokens.add(new Token(type, value, literal, line, lineStart, start));
     }
 }

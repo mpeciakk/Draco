@@ -5,6 +5,8 @@ public enum TokenType {
     CLOSE_SCOPE,
     LEFT_PARENTHESIS,
     RIGHT_PARENTHESIS,
+    LEFT_SQUARE,
+    RIGHT_SQUARE,
     COMMA,
     DOT,
     MINUS,
@@ -20,7 +22,8 @@ public enum TokenType {
     LESS_EQUAL,
     IDENTIFIER,
     STRING,
-    NUMBER,
+    INT,
+    FLOAT,
     AND,
     FALSE,
     NULL,
@@ -31,5 +34,6 @@ public enum TokenType {
     NOT,
     IF,
     ELSE,
-    FUNCTION
+    FUNCTION,
+    COLON
 }

@@ -1,68 +1,79 @@
 package mpeciakk;
 
 import mpeciakk.lexer.DracoLexer;
+import mpeciakk.lexer.TokenType;
 import org.junit.jupiter.api.Test;
-
-import static mpeciakk.lexer.TokenType.*;
 
 public class LexerTest {
 
     @Test
     public void lexer_test1() {
         String input = """
-                a = 1
+                a = 11
                 """;
 
         DracoLexer lexer = new DracoLexer(input);
 
-        Tests.assertTokensMatch(lexer.parse(), IDENTIFIER, EQUAL, NUMBER, EOF);
+        Tests.assertTokensMatch(lexer.parse(), TokenType.IDENTIFIER, TokenType.EQUAL, TokenType.INT, TokenType.EOF);
     }
 
     @Test
     public void lexer_test2() {
         String input = """
-                a = 1
-                                
-                if (a) {
-                    print("it works!")
-                } else if (true) {
-                                
-                } else {
-                                
-                }
+                b = 22.2
+                print(b)
                 """;
 
         DracoLexer lexer = new DracoLexer(input);
 
-        Tests.assertTokensMatch(lexer.parse(), IDENTIFIER, EQUAL, NUMBER,
-                IF, LEFT_PARENTHESIS, IDENTIFIER, RIGHT_PARENTHESIS, OPEN_SCOPE,
-                IDENTIFIER, LEFT_PARENTHESIS, STRING, RIGHT_PARENTHESIS,
-                CLOSE_SCOPE, ELSE, IF, LEFT_PARENTHESIS, TRUE, RIGHT_PARENTHESIS, OPEN_SCOPE,
-                CLOSE_SCOPE, ELSE, OPEN_SCOPE,
-                CLOSE_SCOPE,
-                EOF);
+        Tests.assertTokensMatch(lexer.parse(), TokenType.IDENTIFIER, TokenType.EQUAL, TokenType.FLOAT, TokenType.IDENTIFIER, TokenType.LEFT_PARENTHESIS, TokenType.IDENTIFIER, TokenType.RIGHT_PARENTHESIS, TokenType.EOF);
     }
 
     @Test
     public void lexer_test3() {
         String input = """
-                function a(b, c) {
-                    if (b == 11 || b > 12) c()
-                }
-                                
-                a(11, function() {
-                    print("it works!")
-                })
+                1 + 2 - 3 * 4 / 5;
                 """;
 
         DracoLexer lexer = new DracoLexer(input);
 
-        Tests.assertTokensMatch(lexer.parse(), FUNCTION, IDENTIFIER, LEFT_PARENTHESIS, IDENTIFIER, COMMA, IDENTIFIER, RIGHT_PARENTHESIS, OPEN_SCOPE,
-                IF, LEFT_PARENTHESIS, IDENTIFIER, EQUAL_EQUAL, NUMBER, OR, IDENTIFIER, GREATER, NUMBER, RIGHT_PARENTHESIS, IDENTIFIER, LEFT_PARENTHESIS, RIGHT_PARENTHESIS,
-                CLOSE_SCOPE,
-                IDENTIFIER, LEFT_PARENTHESIS, NUMBER, COMMA, FUNCTION, LEFT_PARENTHESIS, RIGHT_PARENTHESIS, OPEN_SCOPE,
-                IDENTIFIER, LEFT_PARENTHESIS, STRING, RIGHT_PARENTHESIS,
-                CLOSE_SCOPE, RIGHT_PARENTHESIS,
-                EOF);
+        Tests.assertTokensMatch(lexer.parse(), TokenType.INT, TokenType.PLUS, TokenType.INT, TokenType.MINUS, TokenType.INT, TokenType.STAR, TokenType.INT, TokenType.SLASH, TokenType.INT, TokenType.SEMICOLON, TokenType.EOF);
+    }
+
+    @Test
+    public void lexer_test4() {
+        String input = """
+                true && false || a == "str"
+                """;
+
+        DracoLexer lexer = new DracoLexer(input);
+
+        Tests.assertTokensMatch(lexer.parse(), TokenType.TRUE, TokenType.AND, TokenType.FALSE, TokenType.OR, TokenType.IDENTIFIER, TokenType.EQUAL_EQUAL, TokenType.STRING, TokenType.EOF);
+    }
+
+    @Test
+    public void lexer_test5() {
+        String input = """
+                a > b || b < a && (a >= c) && a <= c || !a || a != b
+                """;
+
+        DracoLexer lexer = new DracoLexer(input);
+
+        Tests.assertTokensMatch(lexer.parse(), TokenType.IDENTIFIER, TokenType.GREATER, TokenType.IDENTIFIER, TokenType.OR, TokenType.IDENTIFIER, TokenType.LESS, TokenType.IDENTIFIER, TokenType.AND,
+                TokenType.LEFT_PARENTHESIS, TokenType.IDENTIFIER, TokenType.GREATER_EQUAL, TokenType.IDENTIFIER, TokenType.RIGHT_PARENTHESIS, TokenType.AND,
+                TokenType.IDENTIFIER, TokenType.LESS_EQUAL, TokenType.IDENTIFIER, TokenType.OR, TokenType.NOT, TokenType.IDENTIFIER, TokenType.OR, TokenType.IDENTIFIER,
+                TokenType.NOT_EQUAL, TokenType.IDENTIFIER, TokenType.EOF);
+    }
+
+    @Test
+    public void lexer_test6() {
+        String input = """
+                if (true) { a[1] } else {}
+                """;
+
+        DracoLexer lexer = new DracoLexer(input);
+
+        Tests.assertTokensMatch(lexer.parse(), TokenType.IF, TokenType.LEFT_PARENTHESIS, TokenType.TRUE, TokenType.RIGHT_PARENTHESIS, TokenType.OPEN_SCOPE,
+                TokenType.IDENTIFIER, TokenType.LEFT_SQUARE, TokenType.INT, TokenType.RIGHT_SQUARE, TokenType.CLOSE_SCOPE, TokenType.ELSE, TokenType.OPEN_SCOPE, TokenType.CLOSE_SCOPE, TokenType.EOF);
     }
 }

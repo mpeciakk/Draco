@@ -1,30 +1,26 @@
-package mpeciakk.runtime;
+package mpeciakk;
 
-import mpeciakk.lexer.Token;
+public class DracoTokenError extends Error {
 
-public class DracoRuntimeError extends Error {
     private final String line;
     private final int lineIndex;
-    private final int characterIndex;
-    private final Token token;
+    private final int index;
     private final String issue;
 
-    public DracoRuntimeError(String message) {
+    public DracoTokenError(String message) {
         super(message);
         this.issue = null;
         this.line = "";
         this.lineIndex = 0;
-        this.characterIndex = 0;
-        this.token = null;
+        this.index = 0;
     }
 
-    public DracoRuntimeError(String issue, String line, int lineIndex, Token token) {
+    public DracoTokenError(String issue, String line, int lineIndex, int index) {
         super();
         this.issue = issue;
         this.line = line;
         this.lineIndex = lineIndex;
-        this.characterIndex = token.start() - token.lineStart();
-        this.token = token;
+        this.index = index;
     }
 
     @Override
@@ -35,7 +31,7 @@ public class DracoRuntimeError extends Error {
 
         var leadingWhitespace = line.indexOf(line.trim());
         var pipeOffset = String.valueOf(lineIndex + 1).length() - 1;
-        var arrow = " ".repeat(characterIndex - leadingWhitespace) + "^".repeat(token == null || token.literal() == null ? 1 : ((String) token.literal()).length());
+        var arrow = " ".repeat(index - leadingWhitespace) + "^";
         var offsetPipe = " ".repeat(pipeOffset) + "|";
         var pipe = "|";
 
