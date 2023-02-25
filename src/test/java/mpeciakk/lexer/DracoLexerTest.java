@@ -2,7 +2,12 @@ package mpeciakk.lexer;
 
 import mpeciakk.TestEnvironment;
 import mpeciakk.Tests;
+import mpeciakk.parser.DracoParseError;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DracoLexerTest {
 
@@ -11,7 +16,7 @@ public class DracoLexerTest {
     @Test
     public void lexer_test_variable_declaration() {
         String input = """
-                b = 22.2
+                b=22.2
                 a = 11
                 """;
 
@@ -30,10 +35,19 @@ public class DracoLexerTest {
     @Test
     public void lexer_test_arithmetic() {
         String input = """
-                1 + 2 - 3 * 4 / 5;
+                1+2- 3 *4 / 5;
                 """;
 
         Tests.assertTokensMatch(testEnvironment.lex(input), TokenType.INT, TokenType.PLUS, TokenType.INT, TokenType.MINUS, TokenType.INT, TokenType.STAR, TokenType.INT, TokenType.SLASH, TokenType.INT, TokenType.SEMICOLON, TokenType.EOF);
+    }
+
+    @Test
+    public void lexer_test_arithmetic2() {
+        String input = """
+                3.0/4
+                """;
+
+        Tests.assertTokensMatch(testEnvironment.lex(input), TokenType.FLOAT, TokenType.SLASH, TokenType.INT, TokenType.EOF);
     }
 
     @Test
@@ -74,5 +88,52 @@ public class DracoLexerTest {
                 """;
 
         Tests.assertTokensMatch(testEnvironment.lex(input), TokenType.NULL, TokenType.EOF);
+    }
+
+    @Test
+    public void lexer_test_comment() {
+        String input = """
+                // some
+                // random
+                // comments
+                """;
+
+        Tests.assertTokensMatch(testEnvironment.lex(input), TokenType.EOF);
+    }
+
+    @Test
+    public void lexer_test_string_error() {
+        String input = """
+                "string
+                """;
+
+        assertThrows(DracoTokenError.class, () -> testEnvironment.lex(input));
+    }
+
+    @Test
+    public void lexer_test_error() {
+        String input = """
+                #
+                """;
+
+        assertThrows(DracoTokenError.class, () -> testEnvironment.lex(input));
+    }
+
+    @Test
+    public void lexer_test_float_error() {
+        String input = """
+                1..2
+                """;
+
+        assertThrows(DracoTokenError.class, () -> testEnvironment.lex(input));
+    }
+
+    @Test
+    public void lexer_test() {
+        String input = """
+                1 !
+                """.trim();
+
+        Tests.assertTokensMatch(testEnvironment.lex(input), TokenType.INT, TokenType.NOT, TokenType.EOF);
     }
 }

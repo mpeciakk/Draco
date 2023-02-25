@@ -24,4 +24,11 @@ public class ExpressionStatement implements Statement {
     public int hashCode() {
         return Objects.hash(expression);
     }
+
+    @Override
+    public String toString() {
+        return "ExpressionStatement{" +
+                "expression=" + expression +
+                '}';
+    }
 }

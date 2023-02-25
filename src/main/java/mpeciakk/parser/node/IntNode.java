@@ -1,8 +1,10 @@
 package mpeciakk.parser.node;
 
+import mpeciakk.parser.Expression;
+
 import java.util.Objects;
 
-public class IntNode extends Node {
+public class IntNode implements Expression {
 
     private final int value;
 
@@ -20,5 +22,12 @@ public class IntNode extends Node {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "IntNode{" +
+                "value=" + value +
+                '}';
     }
 }

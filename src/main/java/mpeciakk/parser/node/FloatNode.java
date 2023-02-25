@@ -1,8 +1,10 @@
 package mpeciakk.parser.node;
 
+import mpeciakk.parser.Expression;
+
 import java.util.Objects;
 
-public class FloatNode extends Node {
+public class FloatNode implements Expression {
 
     private final float value;
 

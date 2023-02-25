@@ -1,6 +1,8 @@
 package mpeciakk.parser.node;
 
-public class NullNode extends Node {
+import mpeciakk.parser.Expression;
+
+public class NullNode implements Expression {
 
     @Override
     public boolean equals(Object o) {

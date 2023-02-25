@@ -1,7 +1,5 @@
 package mpeciakk.lexer;
 
-import mpeciakk.DracoTokenError;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,6 +113,7 @@ public class DracoLexer {
                     }
                 } else {
                     addToken(TokenType.SLASH);
+                    advance();
                 }
             }
 

@@ -1,4 +1,4 @@
-package mpeciakk.parser;
+package mpeciakk.parser.statement;
 
 import mpeciakk.TestEnvironment;
 import mpeciakk.Tests;

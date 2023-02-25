@@ -43,26 +43,17 @@ public class DracoParseError extends Error {
         return String.format("""
                         %s:
                            %s
-                           %s   %s
                          %d %s   %s
+                           %s   %s
                            %s
-                        """,
+                        """.trim(),
                 issue,
                 offsetPipe,
+                lineIndex + 1,
                 offsetPipe,
                 line.trim(),
-                lineIndex + 1,
                 pipe,
                 arrow,
                 offsetPipe);
-    }
-
-    @Override
-    public void printStackTrace() {
-        if (issue != null) {
-            return;
-        }
-
-        super.printStackTrace();
     }
 }

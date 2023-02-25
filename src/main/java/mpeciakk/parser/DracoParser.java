@@ -2,6 +2,7 @@ package mpeciakk.parser;
 
 import mpeciakk.lexer.Token;
 import mpeciakk.lexer.TokenType;
+import mpeciakk.parser.expression.*;
 import mpeciakk.parser.node.*;
 import mpeciakk.parser.statement.ExpressionStatement;
 
@@ -52,11 +53,31 @@ public class DracoParser {
     }
 
     private Expression term() {
-        return factor();
+        Expression left = factor();
+
+        while (check(MINUS, PLUS)) {
+            if (match(PLUS)) {
+                left = new AddExpression(left, term());
+            } else if (match(MINUS)) {
+                left = new SubtractExpression(left, term());
+            }
+        }
+
+        return left;
     }
 
     private Expression factor() {
-        return unary();
+        Expression left = unary();
+
+        while (check(SLASH, STAR)) {
+            if (match(SLASH)) {
+                left = new DivideExpression(left, factor());
+            } else if (match(STAR)) {
+                left = new MultiplyExpression(left, factor());
+            }
+        }
+
+        return left;
     }
 
     private Expression unary() {
@@ -64,7 +85,7 @@ public class DracoParser {
             if (match(NOT)) {
                 // return not node
             } else if (match(MINUS)) {
-                // return not node
+                return new MinusExpression(unary());
             }
         }
 
@@ -116,10 +137,6 @@ public class DracoParser {
             return expression;
         }
 
-        if (check(IDENTIFIER)) {
-            // variable access node
-        }
-
         throw error(current, "Expected to find an expression");
     }
 
@@ -165,20 +182,6 @@ public class DracoParser {
         return false;
     }
 
-    public boolean checkNext(TokenType type) {
-        if (isAtEnd()) {
-            return false;
-        }
-
-        Token next = tokens.get(index + 1);
-
-        if (next.type() == EOF) {
-            return false;
-        }
-
-        return next.type() == type;
-    }
-
     public boolean match(TokenType... types) {
         for (TokenType type : types) {
             if (check(type)) {
@@ -191,10 +194,6 @@ public class DracoParser {
     }
 
     private Error error(Token token, String message) {
-        if (token == null) {
-            return new DracoParseError(message);
-        } else {
-            return new DracoParseError(message, lines[token.line()], token.start(), token);
-        }
+        return new DracoParseError(message, lines[token.line()], token.start(), token);
     }
 }

@@ -1,8 +1,10 @@
 package mpeciakk.parser.node;
 
+import mpeciakk.parser.Expression;
+
 import java.util.Objects;
 
-public class StringNode extends Node {
+public class StringNode implements Expression {
 
     private final String value;
 

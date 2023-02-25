@@ -1,8 +1,10 @@
 package mpeciakk.parser.node;
 
+import mpeciakk.parser.Expression;
+
 import java.util.Objects;
 
-public class BooleanNode extends Node {
+public class BooleanNode implements Expression {
 
     private final boolean value;
 
