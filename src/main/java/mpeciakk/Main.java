@@ -9,8 +9,6 @@ public class Main {
                         """.trim();
 
     public static void main(String[] args) {
-        DracoLexer lexer = new DracoLexer(input);
-
-        System.out.println(lexer.parse());
+//        DracoLexer lexer = new DracoLexer(input);
     }
 }

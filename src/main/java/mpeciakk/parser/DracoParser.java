@@ -45,11 +45,43 @@ public class DracoParser {
     }
 
     private Expression binary() {
-        return comparison();
+        Expression left = comparison();
+
+        while (check(AND, OR)) {
+            if (match(AND)) {
+                left = new AndExpression(left, binary());
+            } else if (match(OR)) {
+                left = new OrExpression(left, binary());
+            }
+        }
+
+        return left;
     }
 
     private Expression comparison() {
-        return term();
+        if (match(NOT)) {
+            return new NotExpression(comparison());
+        }
+
+        Expression left = term();
+
+        while (check(EQUAL_EQUAL, NOT_EQUAL, GREATER, LESS, GREATER_EQUAL, LESS_EQUAL)) {
+            if (match(EQUAL_EQUAL)) {
+                left = new EqualsExpression(left, comparison());
+            } else if (match(NOT_EQUAL)) {
+                left = new NotEqualsExpression(left, comparison());
+            } else if (match(GREATER)) {
+                left = new GreaterThanExpression(left, comparison());
+            } else if (match(LESS)) {
+                left = new LessThanExpression(left, comparison());
+            } else if (match(GREATER_EQUAL)) {
+                left = new GreaterEqualThanExpression(left, comparison());
+            } else if (match(LESS_EQUAL)) {
+                left = new LessEqualThanExpression(left, comparison());
+            }
+        }
+
+        return left;
     }
 
     private Expression term() {

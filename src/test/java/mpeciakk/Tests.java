@@ -32,7 +32,7 @@ public class Tests {
             if (statements.length <= i) {
                 throw new IllegalStateException(String.format("Statement at index %d is null!", i));
             } else if (!tokens.get(i).equals(statements[i])) {
-                throw new IllegalStateException(String.format("Statement at index %d did not match expected type %s (found %s!)!", i, statements[i], tokens.get(i)));
+                throw new IllegalStateException(String.format("Statement did not match expected type %s (found %s)", statements[i], tokens.get(i)));
             }
         }
     }

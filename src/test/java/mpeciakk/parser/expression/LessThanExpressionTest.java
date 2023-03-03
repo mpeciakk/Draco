@@ -9,30 +9,30 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DivideExpressionTest {
+public class LessThanExpressionTest {
 
     private final TestEnvironment testEnvironment = new TestEnvironment();
 
     @Test
-    public void parser_divide_expression() {
+    public void parser_less_than_expression() {
         String input = """
-                3.0/4
+                1<2.0
                 """;
 
-        Tests.assertStatementsMatch(testEnvironment.parse(input), new ExpressionStatement(new DivideExpression(new FloatNode(3.0f), new IntNode(4))));
+        Tests.assertStatementsMatch(testEnvironment.parse(input), new ExpressionStatement(new LessThanExpression(new IntNode(1), new FloatNode(2))));
     }
 
     @Test
-    public void test_divide_expression_equal() {
-        DivideExpression node = new DivideExpression(new IntNode(3), new FloatNode(4));
-        DivideExpression node2 = new DivideExpression(new IntNode(3), new FloatNode(4));
+    public void test_less_than_expression_equal() {
+        LessThanExpression node = new LessThanExpression(new IntNode(1), new FloatNode(2));
+        LessThanExpression node2 = new LessThanExpression(new IntNode(1), new FloatNode(2));
 
         assertEquals(node, node2);
     }
 
     @Test
-    public void test_divide_expression_hash() {
-        DivideExpression node = new DivideExpression(new IntNode(3), new FloatNode(4));
+    public void test_less_than_expression_hash() {
+        LessThanExpression node = new LessThanExpression(new IntNode(1), new FloatNode(2));
 
         int hash = node.hashCode();
 

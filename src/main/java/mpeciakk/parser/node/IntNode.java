@@ -23,11 +23,4 @@ public class IntNode implements Expression {
     public int hashCode() {
         return Objects.hash(value);
     }
-
-    @Override
-    public String toString() {
-        return "IntNode{" +
-                "value=" + value +
-                '}';
-    }
 }
